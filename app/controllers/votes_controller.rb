@@ -1,12 +1,16 @@
 class VotesController < ApplicationController
+	include JokeTracker
+	before_action :check_voted_joke, only: [:new]
+
 	def new
+		@vote = current_joke.votes.new
 	end
 
 	def create
-		@vote = Vote.new(vote_params)
+		@vote = current_joke.votes.build(vote_params)
 		if @vote.save
 			update_current_joke
-			mark_voted_joke
+			mark_voted_joke(current_joke.id)
 			redirect_to_next_unvoted_joke
 		else
 			render :new
@@ -23,11 +27,15 @@ class VotesController < ApplicationController
 		end
 
 		def vote_params
-			params.require(:vote).permit(:like).merge!(joke_id: joke_id)
+			params.require(:vote).permit(:like)
 		end
 
 		def current_joke
-			Joke.find(params[:joke_id])
+			if params[:joke_id].present?
+				Joke.find(params[:joke_id])
+			else
+				Joke.first
+			end
 		end
 
 		def update_current_joke
@@ -39,14 +47,6 @@ class VotesController < ApplicationController
 			end
 		end
 
-		def mark_voted_joke
-			voted_jokes << current_joke.id
-		end
-
-		def voted_jokes
-			session[:voted_jokes] ||= []
-		end
-
 		def redirect_to_next_unvoted_joke
 			next_joke = Joke.next_unvoted_joke(voted_jokes)
 			if next_joke.present?
@@ -54,5 +54,9 @@ class VotesController < ApplicationController
 			else
 				redirect_to goodbye_votes_url
 			end
+		end
+
+		def check_voted_joke
+			redirect_to_next_unvoted_joke if voted_jokes.include? current_joke.id
 		end
 end

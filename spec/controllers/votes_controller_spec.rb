@@ -1,6 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe VotesController, type: :controller do
+  describe "#new" do
+    def do_request
+      get :new, joke_id: joke.id
+    end
+
+    let!(:joke) { create(:joke) }
+
+    it "displays a form" do
+      do_request
+      expect(response).to render_template :new
+    end
+  end
+
   describe "#create" do
     def do_request(params)
       post :create, joke_id: joke.id, vote: params
@@ -53,6 +66,7 @@ RSpec.describe VotesController, type: :controller do
 
     context 'Failure' do
       let!(:joke) { create(:joke) }
+      
       it 'does not save a vote' do
         params = attributes_for(:vote, like: nil)
         expect { do_request(params) }.not_to change(Vote, :count)
@@ -63,6 +77,13 @@ RSpec.describe VotesController, type: :controller do
         do_request(params)
         expect(response).to render_template :new
       end
+    end
+  end
+
+  describe "#goodbye" do
+    it "renders goodbye page" do
+      get :goodbye
+      expect(response).to render_template :goodbye
     end
   end
 end
