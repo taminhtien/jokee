@@ -5,6 +5,10 @@ RSpec.describe Joke, type: :model do
 		it { is_expected.to validate_presence_of :content }
 	end
 
+	context "Association" do
+		it { is_expected.to have_many :votes }
+	end
+
 	describe '#next_unvoted_joke' do
 		let!(:jokes) { create_list(:joke, 3) }
 		let(:voted_jokes) { [jokes.first, jokes.second] }

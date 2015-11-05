@@ -1,4 +1,5 @@
 class Joke < ActiveRecord::Base
+	has_many :votes
 	validates :content, presence: true
 
 	def self.next_unvoted_joke(voted_jokes)
