@@ -8,6 +8,9 @@ class VotesController < ApplicationController
 		redirect_to_next_unvoted_joke
 	end
 
+	def goodbye
+	end
+	
 	private
 
 		def current_joke
@@ -35,7 +38,7 @@ class VotesController < ApplicationController
 			if next_joke.present?
 				redirect_to new_joke_vote_path(next_joke.id)
 			else
-				redirect_to root_path
+				redirect_to goodbye_votes_url
 			end
 		end
 end

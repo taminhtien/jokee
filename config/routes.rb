@@ -4,4 +4,6 @@ Rails.application.routes.draw do
   resources :jokes, only: [] do
     resources :votes, only: [:new, :create]
   end
+
+  get 'jokes/votes/goodbye' => 'votes#goodbye', as: :goodbye_votes
 end
