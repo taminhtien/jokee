@@ -3,15 +3,28 @@ class VotesController < ApplicationController
 	end
 
 	def create
-		update_current_joke
-		mark_voted_joke
-		redirect_to_next_unvoted_joke
+		@vote = Vote.new(vote_params)
+		if @vote.save
+			update_current_joke
+			mark_voted_joke
+			redirect_to_next_unvoted_joke
+		else
+			render :new
+		end
 	end
 
 	def goodbye
 	end
-	
+
 	private
+
+		def joke_id
+			params[:joke_id]
+		end
+
+		def vote_params
+			params.require(:vote).permit(:like).merge!(joke_id: joke_id)
+		end
 
 		def current_joke
 			Joke.find(params[:joke_id])
@@ -21,6 +34,7 @@ class VotesController < ApplicationController
 			if params[:vote][:like]
 				current_joke.increase_like
 			else
+				ap params[:vote][:like], plain: true
 				current_joke.increase_dislike
 			end
 		end

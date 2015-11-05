@@ -1,26 +1,33 @@
 require 'rails_helper'
 
 RSpec.describe VotesController, type: :controller do
-  context "#create" do
+  describe "#create" do
     def do_request(params)
       post :create, joke_id: joke.id, vote: params
     end
 
     context "Success" do
       let!(:joke) { create(:joke) }
-      
+
+      it "saves a vote" do
+        params = attributes_for(:vote)      
+        expect { do_request(params) }.to change(Vote, :count).by(1)
+      end
+
       it "increases the number of joke's like" do
         params = attributes_for(:vote)
         expect {
           do_request(params)
-          joke.reload }.to change(joke, :like).by(1)
+          joke.reload
+        }.to change(joke, :like).by(1)
       end
 
       it "increases the number of joke's dislike" do
         params = attributes_for(:vote, like: false)
         expect {
           do_request(params)
-          joke.reload }.to change(joke, :dislike).by(1)
+          joke.reload
+        }.to change(joke, :dislike).by(1)
       end
 
       describe '#redirect_to_next_unvoted_joke' do
@@ -41,6 +48,20 @@ RSpec.describe VotesController, type: :controller do
             expect(response).to redirect_to goodbye_votes_url
           end
         end
+      end
+    end
+
+    context 'Failure' do
+      let!(:joke) { create(:joke) }
+      it 'does not save a vote' do
+        params = attributes_for(:vote, like: nil)
+        expect { do_request(params) }.not_to change(Vote, :count)
+      end
+
+      it 'renders a form if can not save a vote' do
+        params = attributes_for(:vote, like: nil)
+        do_request(params)
+        expect(response).to render_template :new
       end
     end
   end
