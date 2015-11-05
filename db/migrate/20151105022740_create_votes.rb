@@ -1,8 +1,7 @@
 class CreateVotes < ActiveRecord::Migration
   def change
     create_table :votes do |t|
-    	t.integer :like
-    	t.integer :dislike
+    	t.boolean :like
     	t.references :joke
     end
   end

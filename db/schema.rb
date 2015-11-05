@@ -17,12 +17,13 @@ ActiveRecord::Schema.define(version: 20151105022740) do
   enable_extension "plpgsql"
 
   create_table "jokes", force: :cascade do |t|
-    t.text "content"
+    t.text    "content"
+    t.integer "like",    default: 0
+    t.integer "dislike", default: 0
   end
 
   create_table "votes", force: :cascade do |t|
-    t.integer "like"
-    t.integer "dislike"
+    t.boolean "like"
     t.integer "joke_id"
   end
 
