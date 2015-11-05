@@ -5,12 +5,12 @@ RSpec.describe Joke, type: :model do
 		it { is_expected.to validate_presence_of :content }
 	end
 
-	describe '#next_unvote_joke' do
+	describe '#next_unvoted_joke' do
 		let!(:jokes) { create_list(:joke, 3) }
 		let(:voted_jokes) { [jokes.first, jokes.second] }
 		
-		it 'returns next unvote joke' do
-			next_joke = Joke.next_unvote_joke(voted_jokes)
+		it 'returns next unvoted joke' do
+			next_joke = Joke.next_unvoted_joke(voted_jokes)
 			expect(next_joke).to eq jokes.last
 		end
 	end

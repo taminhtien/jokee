@@ -5,7 +5,7 @@ class VotesController < ApplicationController
 	def create
 		update_current_joke
 		mark_voted_joke
-		redirect_to_next_joke
+		redirect_to_next_unvoted_joke
 	end
 
 	private
@@ -30,8 +30,8 @@ class VotesController < ApplicationController
 			session[:voted_jokes] ||= []
 		end
 
-		def redirect_to_next_joke
-			next_joke = Joke.next_unvote_joke(voted_jokes)
+		def redirect_to_next_unvoted_joke
+			next_joke = Joke.next_unvoted_joke(voted_jokes)
 			if next_joke.present?
 				redirect_to new_joke_vote_path(next_joke.id)
 			else
