@@ -6,12 +6,32 @@ RSpec.describe Joke, type: :model do
 	end
 
 	describe '#next_unvote_joke' do
-		let!(:jokes) { FactoryGirl::create_list(:joke, 3) }
+		let!(:jokes) { create_list(:joke, 3) }
 		let(:voted_jokes) { [jokes.first, jokes.second] }
 		
 		it 'returns next unvote joke' do
 			next_joke = Joke.next_unvote_joke(voted_jokes)
 			expect(next_joke).to eq jokes.last
+		end
+	end
+
+	describe '#increase_like' do
+		let(:joke) { create(:joke) }
+
+		it "increases the number of joke's like" do
+			expect {
+				joke.increase_like
+				joke.reload }.to change(joke, :like).by(1)
+		end
+	end
+
+	describe '#increase_dislike' do
+		let(:joke) { create(:joke) }
+
+		it "increases the number of joke's dislike" do
+			expect {
+				joke.increase_dislike
+				joke.reload }.to change(joke, :dislike).by(1)
 		end
 	end
 end
