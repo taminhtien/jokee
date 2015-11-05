@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root 'votes#index'
+  root 'votes#new'
 
   resources :jokes, only: [] do
     resources :votes, only: [:new, :create]

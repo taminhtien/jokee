@@ -1,0 +1,8 @@
+- joke = @vote.joke
+= joke.content
+
+= simple_form_for @vote, url: joke_votes_url(joke.id) do |f|
+	= f.input :like,
+		as: :radio_buttons,
+		label: false
+	= f.button :submit
