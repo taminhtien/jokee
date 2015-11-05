@@ -1,4 +1,4 @@
 class Vote < ActiveRecord::Base
 	belongs_to :joke
-	validates :like, :dislike, :joke, presence: true
+	validates :like, :joke, presence: true
 end
