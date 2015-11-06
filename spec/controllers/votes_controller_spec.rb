@@ -27,20 +27,24 @@ RSpec.describe VotesController, type: :controller do
         expect { do_request(params) }.to change(Vote, :count).by(1)
       end
 
-      it "increases the number of joke's like" do
-        params = attributes_for(:vote)
-        expect {
-          do_request(params)
-          joke.reload
-        }.to change(joke, :like).by(1)
+      context "User likes joke" do
+        it "increases the number of joke's like" do
+          params = attributes_for(:vote)
+          expect {
+            do_request(params)
+            joke.reload
+          }.to change(joke, :like).by(1)
+        end
       end
 
-      it "increases the number of joke's dislike" do
-        params = attributes_for(:vote, like: false)
-        expect {
-          do_request(params)
-          joke.reload
-        }.to change(joke, :dislike).by(1)
+      context "User dislikes joke" do
+        it "increases the number of joke's dislike" do
+          params = attributes_for(:vote, like: false)
+          expect {
+            do_request(params)
+            joke.reload
+          }.to change(joke, :dislike).by(1)
+        end
       end
 
       describe '#redirect_to_next_unvoted_joke' do
@@ -66,7 +70,7 @@ RSpec.describe VotesController, type: :controller do
 
     context 'Failure' do
       let!(:joke) { create(:joke) }
-      
+
       it 'does not save a vote' do
         params = attributes_for(:vote, like: nil)
         expect { do_request(params) }.not_to change(Vote, :count)

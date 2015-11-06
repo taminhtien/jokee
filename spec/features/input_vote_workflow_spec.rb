@@ -9,22 +9,30 @@ RSpec.describe "InputVoteWorkflow", type: :feature do
 		]
 	end
 
-	def vote
+	def like
 		choose 'Yes'
+		click_on 'Create Vote'
+	end
+
+	def dislike
+		choose 'No'
 		click_on 'Create Vote'
 	end
 
 	it "allows user to input his opinion" do
 		visit '/'
 		expect(page).to have_content jokes.first.content
-		
-		vote
+
+		dislike
+		expect(jokes.first.reload.dislike).to eq(1)
 		expect(page).to have_content jokes.second.content
 		
-		vote
+		dislike
+		expect(jokes.second.reload.dislike).to eq(1)
 		expect(page).to have_content jokes.third.content
 		
-		vote
+		like
+		expect(jokes.second.reload.dislike).to eq(1)
 		expect(page).to have_content "That's all the jokes for today! Come back another day!"
 	end
 end

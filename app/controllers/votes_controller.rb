@@ -39,10 +39,9 @@ class VotesController < ApplicationController
 		end
 
 		def update_current_joke
-			if params[:vote][:like]
+			if params[:vote][:like].to_s == "true"
 				current_joke.increase_like
 			else
-				ap params[:vote][:like], plain: true
 				current_joke.increase_dislike
 			end
 		end
